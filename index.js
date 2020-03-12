@@ -1,8 +1,11 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 app.use(bodyParser.json())
+app.use(morgan('combined'))
+
 
 let persons = [
     { 
@@ -55,13 +58,14 @@ let persons = [
 
   app.post('/api/persons', (request, response) => {
       const body = request.body
+      console.log(body)
       if (!body.name || !body.number) {
           response.status(400).json({
               error: 'name or number missing'
           })
       } else if (persons.find(person => person.name === body.name)) {
         response.status(400).json({
-            error: 'name already exists in the phonebook'
+            error: 'name must be unique'
         })
       } 
 
