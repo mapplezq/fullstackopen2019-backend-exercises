@@ -44,7 +44,7 @@ app.get('/api/persons', (request, response) => {
         .catch(error => next(error))
   })
 
-  app.post('/api/persons', (request, response) => {
+  app.post('/api/persons', (request, response, next) => {
       const body = request.body
       console.log(body)
       if (!body.name || !body.number) {
@@ -65,9 +65,13 @@ app.get('/api/persons', (request, response) => {
             number: body.number,
         })
   
-        contact.save().then(savedContact => {
-          response.json(savedContact.toJSON())
-        })
+        contact.
+            save()
+            .then(savedContact => savedContact.toJSON())
+            .then(savedAndFormattedContact => {
+                response.json(savedAndFormattedContact)
+            })
+            .catch(error => next(error))
       })
   })
 
@@ -88,10 +92,17 @@ app.get('/api/persons', (request, response) => {
   app.use(unknownEndpoint)
 
   const errorHandler = (error, request, response, next) => {
-    console.log(error.message)
-    
+    console.log(error)
+    if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+    } else {
+        
+    }
+
     next(error)
   }
+
+  app.use(errorHandler)
 
   const PORT = process.env.PORT
   app.listen(PORT, () => {
