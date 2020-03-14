@@ -87,6 +87,12 @@ app.get('/api/persons', (request, response) => {
 
   app.use(unknownEndpoint)
 
+  const errorHandler = (error, request, response, next) => {
+    console.log(error.message)
+    
+    next(error)
+  }
+
   const PORT = process.env.PORT
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
