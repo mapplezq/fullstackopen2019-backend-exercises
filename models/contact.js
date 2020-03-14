@@ -15,10 +15,15 @@ mogoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true})
 const contactSchema = new mogoose.Schema({
     name: {
         type: String,
+        minlength: 3,
         required: true,
         unique: true,
     },
-    number: String,
+    number: { 
+        type: String,
+        minlength: 8,
+        required: true
+    }
 })
 
 contactSchema.plugin(uniqueValidator)
